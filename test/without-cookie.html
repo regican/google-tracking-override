@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google Tracking Override - Test</title>
+</head>
+<body>
+<script>
+    var _gaq = _gaq || [];
+    _gaq.push = function(){};
+
+    var map = {
+            'utmcsr'    : 'source',
+            'utmccn'    : 'campaign',
+            'utmcmd'    : 'medium',
+            'utmcct'    : 'content',
+            'utmctr'    : 'term',
+            'utmgclid'  : 'gclid'
+        },
+        cookieValue = '195498537.1430528125.1.1.utmcsr=(source)|utmccn=(campaign)|utmcmd=(medium)'; //document.cookie.replace(/(?:(?:^|.*;\s*)__utmz\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+        parseCookieValue = function(settings){
+            settings = settings || [];
+            var pair, i,
+                value = cookieValue.split('.').pop().split('|');
+
+            console.log('cookie', value);
+            console.log('incoming', settings);
+
+            while(pair = value.shift()){
+                pair = pair.split('=');
+
+                for (i in map){
+                    //we want to make sure we don't overwrite values that aren't already set by the push
+                    if (typeof map[pair[0]] == "undefined" || settings.hasOwnProperty(map[pair[0]])) continue;
+                    settings[map[pair[0]]] = pair[1];
+                }
+            }
+
+            return settings;
+        },
+        domain = false;
+
+
+    function overrideCookie(settings){
+        var settings = parseCookieValue(settings),
+            head = cookieValue.split('.'),
+            utmz = [],
+                i,
+                expire = 87660;//in a year
+
+            //get id
+            head = head.splice(0, head.length-1).join('.');
+
+            //append the rest of the utm vars
+        for (i in map){
+            if (typeof settings[map[i]] === "undefined") continue;
+
+            utmz.push({
+                key: i,
+                val: settings[map[i]],
+                toString: function(){ return this.key + '=' + encodeURIComponent(this.val)}
+            })
+        }
+
+        head += '.'+ utmz.join('|');
+
+        //get domain
+        if (!domain){
+            domain = setDomain();
+        }
+
+        //set expiry
+        var expiry = new Date();
+            expiry.setTime(expire);
+            expire = toGMTString();
+
+        console.log('outgoing', settings, cookieValue);
+        console.log('cookie head', head);
+        console.log('utmz', utmz);
+        console.log('domain', domain);
+
+        alert('__utmz='+head+'; expires='+expire+'; domain='+domain+'; path=/');
+        //document.cookie = '__utmz='+head+'; expires='+expire+'; domain='+domain+'; path=/';
+    }
+
+    function setDomain(type){
+        type = type || 'child';
+        return (type == 'child') ? document.location.host : document.location.host.replace(document.location.host.split('.').shift(), '');
+    }
+
+
+    var run = function(){
+        var _set,  args =  Array.prototype.slice.apply(arguments), settings = [];
+
+        while(_set = args.shift()){
+            if (typeof _set !== "object" && typeof _set[0] !== "undefined" && typeof _set[1] !== "undefined") continue;
+            settings[ _set[0].replace('_set','').toLowerCase() ] = _set[1];
+        }
+
+        return overrideCookie(settings);
+    }
+
+    _gaq.push.override = run;
+    _gaq.push.setDomain = setDomain;
+
+    _gaq.push.setDomain('parent');
+    _gaq.push.override(
+            ['_setCampaign',    '<1campaign>'],
+            ['_setSource',      '<sour12ce>'],
+            ['_setContent',     '<c3ontent>']
+    );
+
+</script>
+</body>
+</html>

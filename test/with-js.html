@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google Tracking Override - Test</title>
+</head>
+<body>
+<script src="../src/__utmz.js"></script>
+<script src="../src/__utmz.min.js"></script>
+<script>
+    var _gaq = _gaq || [];
+    _gaq.push = function(){};
+
+    _gaq.push.override(
+            ['_setCampaign',    '<1campaign>'],
+            ['_setSource',      '<sour12ce>'],
+            ['_setContent',     '<c3ontent>']
+    );
+</script>
+</body>
+</html>
