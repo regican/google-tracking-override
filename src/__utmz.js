@@ -2,7 +2,7 @@
     'use strict';
 
     w._gaq = w._gaq || [];
-    if (typeof _gaq.setDomain == "function") return;
+    if (typeof w._gaq.push.override == "function") return;
 
     var debug = true,  //for debugging
 
@@ -18,7 +18,7 @@
         },
 
         //simple regex to retrieve cookie value
-        cookieValue = document.cookie.replace(/(?:(?:^|.*;\s*)__utmz\s*\=\s*([^;]*).*$)|^.*$/, "$1"),
+        cookieValue = d.cookie.replace(/(?:(?:^|.*;\s*)__utmz\s*\=\s*([^;]*).*$)|^.*$/, "$1"),
 
         //parses Google Cookie and returns an object containing the data with human readable keys
         parseCookieValue = function(settings){
@@ -81,11 +81,11 @@
             })
         }
 
-        //join the res of the utm values
+        //join the rest of the utm values
         head += '.'+ utmz.join('|');
 
         //get domain
-        domain = document.location.host.replace(document.location.host.split('.').shift(), '')
+        domain = d.location.host.replace(d.location.host.split('.').shift(), '')
 
         //set expiry
         var expiry = new Date();
@@ -93,13 +93,13 @@
         expire = expiry.toGMTString();
 
         //for debugging
-        console.log('outgoing', settings, cookieValue);
-        console.log('cookie head', head);
-        console.log('utmz', utmz);
-        console.log('domain', domain);
+        log('outgoing', settings, cookieValue);
+        log('cookie head', head);
+        log('utmz', utmz);
+        log('domain', domain);
 
         //set the cookie
-        document.cookie = '__utmz='+head+'; expires='+expire+'; domain='+domain+'; path=/';
+        d.cookie = '__utmz='+head+'; expires='+expire+'; domain='+domain+'; path=/';
     }
 
     /**
@@ -128,6 +128,6 @@
     /**
      * set push functions on familar google _gaq object
      */
-    _gaq.push.override = run;
+    w._gaq.push.override = run;
 
 })(document, window);
