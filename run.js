@@ -20,7 +20,7 @@
 					w._gaq.push.override(
 		            	['_setCampaign',    __get.rfsn.split('.')[0]],
 		             	['_setSource',      'refersion'],
-		            	['_setContent',     'affiliate']
+		            	['_setMedium',     	'affiliate']
 		        	);
 				}catch(e){}
 			}
