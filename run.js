@@ -1,9 +1,9 @@
-(function(d,w,u){
+(function(d,w,u,url){
 	var __get = (function () {
-		var map = {};
-		var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-			map[key] = value;
-		});
+		var map = {},
+			parts = w.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+				map[key] = value;
+			});
 		return map;
 	})();
 
@@ -12,19 +12,21 @@
 			head 	= d.head || d.getElementsByTagName("head")[0];
 
 		script.async = 1;
-		script.src 	= '/src/__utmz.min.js';
+		script.src 	= url;
 		script.onload = function(){
 			w._gaq = w._gaq || false;
 			if (w._gaq){
-				w._gaq.push.override(
-		             ['_setCampaign',    __get.rfsn.split('.')[0]],
-		             ['_setSource',      'refersion'],
-		             ['_setContent',     'affiliate']
-		        );
+				try {
+					w._gaq.push.override(
+		            	['_setCampaign',    __get.rfsn.split('.')[0]],
+		             	['_setSource',      'refersion'],
+		            	['_setContent',     'affiliate']
+		        	);
+				}catch(e){}
 			}
 		}
 
 		head.appendChild(script);
 	}
 
-})(document,window, "undefined")
+})(document,window,"undefined","//d3jwh6hymghfj0.cloudfront.net/www/js/trk/__utmz.min.js")
